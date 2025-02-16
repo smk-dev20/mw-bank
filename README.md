@@ -54,5 +54,120 @@ DB_NAME=mydatabase
 python app/main.py
 ```
 
-
 Application will start on http://localhost:8000
+
+## APIS
+
+### 1. Create Customer
+```
+URL: http://127.0.0.1:8000/customers
+Method: POST
+Header: Content-Type: application/json
+Body:
+{
+    "customer_first_name": "Greg",
+    "customer_last_name": "House",
+    "customer_address": "123 North Ave",
+    "customer_city": "Anycity",
+    "customer_state": "NJ",
+    "customer_zipcode": 23455,
+    "customer_email": "ghouse@ppth.org"
+}
+Expected Response:
+{
+    "message": "Customer created successfully",
+    "data": {
+        "customer_first_name": "Greg",
+        "customer_last_name": "House",
+        "customer_address": "123 North Ave",
+        "customer_city": "Anycity",
+        "customer_state": "NJ",
+        "customer_zipcode": 23455,
+        "customer_email": "ghouse@ppth.org",
+        "customer_id": 214923,
+        "created_on": "2025-02-16T11:44:28.558521",
+        "updated_on": "2025-02-16T11:44:28.558521"
+    }
+}
+```
+
+### 2. Create Account
+```
+URL: http://127.0.0.1:8000/accounts
+Method: POST 
+Header: Content-Type: application/json
+Body:
+{
+    "customer_id": 214923,
+    "account_balance": 5000
+}
+
+Expected Response:
+{
+    "message": "Account created successfully",
+    "data": {
+        "customer_id": 214923,
+        "account_balance": 5000.0,
+        "account_id": 528981,
+        "created_on": "2025-02-16T11:54:09.133810",
+        "updated_on": "2025-02-16T11:54:09.133810"
+    }
+}
+```
+
+### 3. Get Account Balance by Account ID
+```
+URL: http://127.0.0.1:8000/accounts/528981/balance
+Method: GET
+Body: None
+Expected Response:
+{
+    "account_id": 528981,
+    "balance": 5000.0
+}
+```
+
+### 4. Transfer Funds
+```
+URL: http://127.0.0.1:8000/transfer
+Method: POST
+Header: Content-Type: application/json
+Body:
+{
+    "sender_account_id": 528981,
+    "receiver_account_id": 907675,
+    "amount": 1000.00
+}
+Expected Response:
+{
+    "message": "Transfer successful",
+    "data": {
+        "sender_account_id": 528981,
+        "receiver_account_id": 907675,
+        "amount": 1000.0,
+        "transfer_id": "f1d7af0b-f1fe-4546-8c63-e2df4a800ae2",
+        "transfer_time": "2025-02-16T11:59:00.900862"
+    }
+}
+```
+
+### 5. Get Transfer History by Account ID
+```
+URL: http://127.0.0.1:8000/accounts/528981/transfers
+Method: GET
+Body: None
+Expected Response:
+{
+    "account_id": 528981,
+    "transfers": [
+        {
+            "transfer_id": "f1d7af0b-f1fe-4546-8c63-e2df4a800ae2",
+            "type": "sent",
+            "to": 907675,
+            "amount": 1000.0,
+            "date": "2025-02-16T11:59:00.900862"
+        }
+    ],
+    "current_balance": 4000.0
+}
+```
