@@ -78,3 +78,23 @@ def transfer_money(db: Session, transfer: schemas.TransferCreate):
     transfer_response = schemas.TransferResponse.from_orm(db_transfer)
     
     return {"message": "Transfer successful", "data": transfer_response}
+
+# Create auto transfer rule
+def create_auto_transfer_rule(db: Session, rule: schemas.AutoTransferRuleCreate):
+    """Handles database insertion for auto transfer rule"""
+    db_rule = models.AutoTransferRule(
+        at_rule_uuid=str(uuid.uuid4()),
+        at_rule_type=rule.at_rule_type,
+        at_rule_primary_account_number=rule.at_rule_primary_account_number,
+        at_rule_threshold=rule.at_rule_threshold,
+        at_rule_linked_account_number=rule.at_rule_linked_account_number,
+        at_rule_notes=rule.at_rule_notes,
+    )
+    
+    db.add(db_rule)
+    db.commit()
+    db.refresh(db_rule)
+
+    rule_response = schemas.AutoTransferRuleResponse.from_orm(db_rule)
+
+    return schemas.APIResponse(message="Auto transfer rule created successfully", data=rule_response)

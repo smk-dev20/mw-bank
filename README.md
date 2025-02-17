@@ -171,3 +171,55 @@ Expected Response:
     "current_balance": 4000.0
 }
 ```
+### 6. Create Auto Transfer Rule
+```
+URL: http://127.0.0.1:8000/create_auto_transfer_rule
+Method: POST
+Header: Content-Type: application/json
+Body:
+{
+    "at_rule_type": "TARGET_BALANCE",
+    "at_rule_primary_account_number": 928113,
+    "at_rule_threshold": 5000.0,
+    "at_rule_linked_account_number": 148160,
+    "at_rule_notes": "Target balance rule for account 928113"
+}
+
+Expected Response:
+{
+    "message": "Auto transfer rule created successfully",
+    "data": {
+        "at_rule_type": "TARGET_BALANCE",
+        "at_rule_primary_account_number": 928113,
+        "at_rule_threshold": 5000.0,
+        "at_rule_linked_account_number": 148160,
+        "at_rule_notes": "Target balance rule for account 928113",
+        "at_rule_uuid": "8cd93ac4-dfa6-4f17-84e8-d8ee37ba2e57",
+        "created_on": "2025-02-16T14:52:13.902006",
+        "updated_on": "2025-02-16T14:52:13.902006"
+    }
+}
+
+#Note: ZERO_BALANCE is the other rule_type for which rule_threshold should be 0.0
+```
+
+### 7. Execute Auto Transfer Rules
+```
+URL: http://127.0.0.1:8000/execute_auto_transfer_rules
+Method: GET
+Body: None
+Expected Response:
+{
+    "message": "Auto transfer execution completed",
+    "data": [
+        {
+            "rule_id": "00fe4af6-cfd6-41ce-8b78-327f56975e8c",
+            "status": "Transfer successful"
+        },
+        {
+            "rule_id": "8cd93ac4-dfa6-4f17-84e8-d8ee37ba2e57",
+            "status": "Transfer successful"
+        }
+    ]
+}
+```

@@ -48,3 +48,16 @@ class TransferHistory(Base):
 
     sender = relationship("Account", foreign_keys=[sender_account_id], back_populates="sent_transfers")
     receiver = relationship("Account", foreign_keys=[receiver_account_id], back_populates="received_transfers")
+
+# Auto-transfer Rules table
+class AutoTransferRule(Base):
+    __tablename__ = "auto_transfer_rules"
+
+    at_rule_uuid = Column(String(255), primary_key=True, unique=True, default=lambda: str(uuid.uuid4()))
+    at_rule_type = Column(String(255), nullable=False)
+    at_rule_primary_account_number = Column(BigInteger, nullable=False)
+    at_rule_threshold = Column(Float, nullable=False)
+    at_rule_linked_account_number = Column(BigInteger, nullable=False)
+    at_rule_notes = Column(String(255), nullable=False)
+    created_on = Column(TIMESTAMP, nullable=False, server_default=func.now())
+    updated_on = Column(TIMESTAMP, nullable=False, server_default=func.now(), onupdate=func.current_timestamp())
