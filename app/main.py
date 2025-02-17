@@ -68,7 +68,7 @@ def get_transfer_history(account_id: int, db: Session = Depends(get_db)):
     return {"account_id": account_id, "transfers": transfer_history, "current_balance": current_balance}
 
 # Create Transfer Rule
-@app.post("/create_auto_transfer_rule/", response_model=schemas.APIResponse)
+@app.post("/create-auto-transfer-rule/", response_model=schemas.APIResponse)
 def create_auto_transfer_rule(rule: schemas.AutoTransferRuleCreate, db: Session = Depends(get_db)):
     # Validate at_rule_type and at_rule_threshold
     if rule.at_rule_type not in {"ZERO_BALANCE", "TARGET_BALANCE"}:
@@ -93,7 +93,7 @@ def create_auto_transfer_rule(rule: schemas.AutoTransferRuleCreate, db: Session 
     return crud.create_auto_transfer_rule(db,rule)
 
 # Execute Transfer Rules
-@app.get("/execute_auto_transfer_rules", response_model=schemas.APIResponse)
+@app.get("/execute-auto-transfer-rules", response_model=schemas.APIResponse)
 def execute_auto_transfer_rules(db: Session = Depends(get_db)):
     """Executes auto transfer rules and processes account transfers accordingly"""
     

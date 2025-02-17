@@ -173,7 +173,7 @@ Expected Response:
 ```
 ### 6. Create Auto Transfer Rule
 ```
-URL: http://127.0.0.1:8000/create_auto_transfer_rule
+URL: http://127.0.0.1:8000/create-auto-transfer-rule
 Method: POST
 Header: Content-Type: application/json
 Body:
@@ -204,8 +204,9 @@ Expected Response:
 ```
 
 ### 7. Execute Auto Transfer Rules
+Note: This API can be setup to be invoked via a cronjob/event trigger (TBD)
 ```
-URL: http://127.0.0.1:8000/execute_auto_transfer_rules
+URL: http://127.0.0.1:8000/execute-auto-transfer-rules
 Method: GET
 Body: None
 Expected Response:
