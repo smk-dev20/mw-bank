@@ -80,15 +80,18 @@ def create_auto_transfer_rule(rule: schemas.AutoTransferRuleCreate, db: Session 
     if rule.at_rule_type == "TARGET_BALANCE" and rule.at_rule_threshold == 0:
         raise HTTPException(status_code=400, detail="For TARGET_BALANCE type, at_rule_threshold must be non-zero.")
 
-    # Validate if primary and linked account numbers exist
-    primary_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_primary_account_number).first()
-    linked_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_linked_account_number).first()
+    # Validate if primary and linked account ids exist
+    primary_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_primary_account_id).first()
+    linked_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_linked_account_id).first()
     
     if not primary_account:
         raise HTTPException(status_code=400, detail="Primary account does not exist.")
     
     if not linked_account:
         raise HTTPException(status_code=400, detail="Linked account does not exist.")
+    
+    if primary_account == linked_account:
+        raise HTTPException(status_code=400, detail="Primary and Linked accounts are the same.")
 
     return crud.create_auto_transfer_rule(db,rule)
 
@@ -106,8 +109,8 @@ def execute_auto_transfer_rules(db: Session = Depends(get_db)):
     results = []
     
     for rule in rules:
-        primary_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_primary_account_number).first()
-        linked_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_linked_account_number).first()
+        primary_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_primary_account_id).first()
+        linked_account = db.query(models.Account).filter(models.Account.account_id == rule.at_rule_linked_account_id).first()
 
         if not primary_account or not linked_account:
             print(f"Skipping rule {rule.at_rule_uuid}: Invalid account(s)")

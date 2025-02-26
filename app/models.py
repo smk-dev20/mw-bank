@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Integer, String, Float, TIMESTAMP, ForeignKey, func
+from sqlalchemy import Column, BigInteger, Integer, String, Float, TIMESTAMP, ForeignKey, func, CheckConstraint, Enum
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
@@ -36,6 +36,10 @@ class Account(Base):
     sent_transfers = relationship("TransferHistory", foreign_keys="[TransferHistory.sender_account_id]", back_populates="sender")
     received_transfers = relationship("TransferHistory", foreign_keys="[TransferHistory.receiver_account_id]", back_populates="receiver")
 
+    __table_args__ = (
+        CheckConstraint("account_balance >= 0", name="balance_non_negative_check"),
+    )
+
 # Transfer History table
 class TransferHistory(Base):
     __tablename__ = "transfer_history"
@@ -54,10 +58,10 @@ class AutoTransferRule(Base):
     __tablename__ = "auto_transfer_rules"
 
     at_rule_uuid = Column(String(255), primary_key=True, unique=True, default=lambda: str(uuid.uuid4()))
-    at_rule_type = Column(String(255), nullable=False)
-    at_rule_primary_account_number = Column(BigInteger, nullable=False)
+    at_rule_type = Column(Enum("ZERO_BALANCE", "TARGET_BALANCE", name="at_rule_type_enum"), nullable=False)
+    at_rule_primary_account_id = Column(BigInteger, ForeignKey("accounts.account_id"), nullable=False)
     at_rule_threshold = Column(Float, nullable=False)
-    at_rule_linked_account_number = Column(BigInteger, nullable=False)
+    at_rule_linked_account_id = Column(BigInteger, ForeignKey("accounts.account_id"), nullable=False)
     at_rule_notes = Column(String(255), nullable=False)
     created_on = Column(TIMESTAMP, nullable=False, server_default=func.now())
     updated_on = Column(TIMESTAMP, nullable=False, server_default=func.now(), onupdate=func.current_timestamp())

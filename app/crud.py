@@ -53,6 +53,12 @@ def transfer_money(db: Session, transfer: schemas.TransferCreate):
 
     if not sender or not receiver:
         return {"message": "Error: Invalid accounts", "data": None}  # Error: Invalid accounts
+    
+    if transfer.amount <= 0:
+        return {"message": "Error: Transfer amount cannot be negative or zero", "data": None}
+
+    if sender == receiver:
+        return {"message":"Error: Sender and Receiver accounts are the same", "data": None} # Error: Sender Receiver accounts are the same
 
     if sender.account_balance < transfer.amount:
         return {"message": "Error: Insufficient balance", "data": None}  # Error: Insufficient balance
@@ -85,9 +91,9 @@ def create_auto_transfer_rule(db: Session, rule: schemas.AutoTransferRuleCreate)
     db_rule = models.AutoTransferRule(
         at_rule_uuid=str(uuid.uuid4()),
         at_rule_type=rule.at_rule_type,
-        at_rule_primary_account_number=rule.at_rule_primary_account_number,
+        at_rule_primary_account_id=rule.at_rule_primary_account_id,
         at_rule_threshold=rule.at_rule_threshold,
-        at_rule_linked_account_number=rule.at_rule_linked_account_number,
+        at_rule_linked_account_id=rule.at_rule_linked_account_id,
         at_rule_notes=rule.at_rule_notes,
     )
     

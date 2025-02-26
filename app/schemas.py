@@ -61,9 +61,9 @@ import uuid
 
 class AutoTransferRuleBase(BaseModel):
     at_rule_type: str
-    at_rule_primary_account_number: int
+    at_rule_primary_account_id: int
     at_rule_threshold: float
-    at_rule_linked_account_number: int
+    at_rule_linked_account_id: int
     at_rule_notes: str
 
 class AutoTransferRuleCreate(AutoTransferRuleBase):
